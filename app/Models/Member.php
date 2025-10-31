@@ -16,7 +16,7 @@ class Member extends Model
         'email',
         'phone',
         'address',
-        'membership_date',
+        'member_since',
         'status',
     ];
 
@@ -31,6 +31,6 @@ class Member extends Model
 
     public function activeBorrowings(): HasMany
     {
-        return $this->borrowings()->where('statue', 'borrowed');
+        return $this->borrowings()->where('status', 'borrowed');
     }
 }

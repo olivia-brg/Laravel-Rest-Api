@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->text('address')->nullable();
+            $table->string('phone')->nullable();
             $table->date('member_since');
             $table->enum('status', ['active', 'inactive', 'suspended'])->default('active');
             $table->timestamps();
