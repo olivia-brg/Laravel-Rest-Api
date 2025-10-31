@@ -13,9 +13,8 @@ class AuthorController extends Controller
 {
     public function index()
     {
-        $authors = Author::query()
-            ->with('books')
-            ->paginate(10);
+        $authors = Author::with('books')->paginate(10);
+
         return AuthorResource::collection($authors);
 
         // Method basique
@@ -49,6 +48,9 @@ class AuthorController extends Controller
     public function destroy(Author $author)
     {
         $author->delete();
-        return response()->json(['message' => 'Author deleted successfully'], 200);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Author deleted successfully'
+        ], 200);
     }
 }

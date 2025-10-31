@@ -25,7 +25,13 @@ class StoreAuthorRequest extends FormRequest
         return [
             // $this->route('author') pour récupérer l'id de l'auteur
             // permet d'update l'auteur avec le même nom, sans que la validation bloque
-            'name' => [ Rule::unique('authors', 'name')->ignore($this->route('author')),'required', 'string', 'max:255', 'regex:/^[a-zA-Z\s]+$/'],
+            'name' => [
+                Rule::unique('authors', 'name')->ignore($this->route('author')),
+                'required',
+                'string',
+                'max:255',
+                'regex:/^[a-zA-Z\s]+$/'
+            ],
             'biography' => 'nullable|string',
             'nationality' => 'nullable|string',
         ];

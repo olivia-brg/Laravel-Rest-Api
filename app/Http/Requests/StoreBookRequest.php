@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreBookRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreBookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +23,21 @@ class StoreBookRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-        ];
+            'title' => 'required|string|max:255',
+            'isbn' => [
+                Rule::unique('books', 'isbn')->ignore($this->route('book')),
+                'required',
+                'string',
+                'max:20'
+            ],
+            'description' => 'nullable|string',
+            'author_id' => 'required|exists:authors,id',
+            'genre' => 'nullable|string',
+            'publication_date' => 'nullable|date',
+            'total_copies' => 'required|integer|min:1',
+            'price' => 'nullable|numeric|min:0',
+            'cover_image' => 'nullable|string',
+
+            ];
     }
 }
