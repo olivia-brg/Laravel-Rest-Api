@@ -2,7 +2,12 @@
 
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\MemberController;
+use App\Models\Author;
+use App\Models\Book;
+use App\Models\Borrowing;
+use App\Models\Member;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,3 +18,19 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('authors', AuthorController::class);
 Route::apiResource('books', BookController::class);
 Route::apiResource('members', MemberController::class);
+Route::apiResource('borrowings', BorrowingController::class)->only(['index', 'store', 'show']);
+
+Route::get('/borrowings/overdue/list', [BorrowingController::class, 'overdue']);
+Route::post('/borrowings/{borrowing}/return', [BorrowingController::class, 'returnBook']);
+
+Route::get('statistics', function() {
+    return response()->json([
+        'total_books' => Book::count(),
+        'total_members' => Member::count(),
+        'total_authors' => Author::count(),
+        'total_borrowings' => Borrowing::count(),
+        'active_borrowings' => Borrowing::whereNull('returned_date')->count(),
+        'books_borrowed' => Borrowing::whereNull('returned_date')->orWhere('status', 'borrowed')->with(['book', 'member'])->get(),
+        'overdue_borrowings' => Borrowing::whereNull('returned_date')->where('due_date', '<', now())->count(),
+    ]);
+});
